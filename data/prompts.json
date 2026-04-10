@@ -8,39 +8,27 @@
     "prompts": [
       {
         "id": "1",
-        "title": "Temel Arayüz Kurulumu",
-        "text": "Next.js (App Router) kullanarak bir sayfa oluştur. Ekran iki ana bölmeye ayrılsın. Sol tarafta 512x512 boyutunda çizim yapılabilen bir HTML5 Canvas olsun. Sağ tarafta ise üretilen AI görselinin görüneceği bir <img> alanı olsun. Canvas için temel çizim fonksiyonlarını (mousedown, mousemove, mouseup) ekle. Çizim siyah kalemle yapılsın ve bir 'Temizle' butonu olsun.",
-        "description": "Next.js ve Canvas ile temel çizim arayüzünü kurar."
+        "title": "Adım 1: Gelişmiş Çizim Arayüzü ve Toolbar Kurulumu",
+        "text": "Next.js (App Router) ve Tailwind CSS kullanarak bir sayfa oluştur. Sayfanın üstünde sabit bir araç çubuğu (Toolbar) olsun. Toolbar içerisinde:\n1. Renk seçici (HTML5 color input).\n2. Fırça kalınlığı ayarı (Range input, 1-50 arası).\n3. 'Tümünü Boya' butonu (Canvas'ın tamamını seçili renkle doldurur).\n4. 'Temizle' butonu (Canvas'ı sıfırlar).\nbulunsun. \nAlt kısımda ise iki ana bölme olsun: Sol tarafta 512x512 boyutunda bir çizim canvas'ı, sağ tarafta 512x512 boyutunda sonuçları gösterecek bir img placeholder. Canvas üzerinde seçilen renk ve kalınlıkla akıcı çizim yapılabilsin. State yönetimini React ile yap.",
+        "description": "Gelişmiş Toolbar ve çift bölmeli çizim arayüzü kurulumu."
       },
       {
         "id": "2",
-        "title": "Canvas Veri Senkronizasyonu",
-        "text": "Canvas üzerindeki çizim her değiştiğinde (mouseup veya mousemove sırasında) canvas içeriğini base64 (data URL) formatına çeviren ve bir React state'ine (drawingData) kaydeden bir fonksiyon ekle. Bu işlem çok sık tetikleneceği için 'debounce' mekanizması ekleyerek performans optimizasyonu sağla.",
-        "description": "Çizimi base64 formatına çevirir ve performans için optimize eder."
+        "title": "Adım 2: 'Generate' Butonu ve Tetikleme Mantığı",
+        "text": "Toolbar'ın en sağına veya görselin altına belirgin bir 'Görseli Oluştur' butonu ekle. Bu buton tıklanmadığı sürece fal.ai'a hiçbir istek gönderilmesin (auto-update kapalı olsun). Butona tıklandığında:\n1. Canvas içeriğini dataURL (base64) formatına çevir.\n2. Bu veriyi bir state'e (drawingData) aktar.\n3. API isteği süresince butonu 'Processing...' durumuna getir ve sağdaki görsel alanına bir loading efekti ekle.",
+        "description": "Manuel tetikleme mekanizması ve yükleme animasyonları."
       },
       {
         "id": "3",
-        "title": "Fal.ai Entegrasyonu (lcm-sd15-i2i)",
-        "text": "Fal.ai JavaScript client (@fal-ai/client) kullanarak fal-ai/lcm-sd15-i2i modeline istek atan bir fonksiyon yaz. Fonksiyon parametre olarak prompt ve image_url (canvas'tan gelen base64) alsın. Gelen cevaptaki images[0].url değerini sağ taraftaki <img> alanında gösterilmek üzere state'e kaydetsin. sync_mode: true kullanarak hızlı yanıt almayı hedefle. strength: 0.6 ve num_inference_steps: 4 değerlerini varsayılan olarak ayarla.",
-        "description": "Görselden görsele üretim için Fal.ai entegrasyonu sağlar."
+        "title": "Adım 3: Fal.ai Entegrasyonu (Döküman Odaklı)",
+        "text": "Aşağıdaki model dökümanını ve JavaScript SDK kullanımını baz alarak `handleGenerate` fonksiyonunu yaz. \n- Model: 'fal-ai/lcm-sd15-i2i'\n- Prompt: Sabit olarak 'masterpiece, professional digital art, highly detailed, 8k, cinematic lighting' kullan.\n- image_url: Canvas'tan gelen base64 verisi.\n- strength: 0.65 (Çizimdeki renklerin ve formun korunması için).\n- sync_mode: true.\n- num_inference_steps: 4.\n\nDöküman Bilgisi:\n---\n# Optimized Latent Consistency (SDv1.5)\n- Endpoint: https://fal.run/fal-ai/lcm-sd15-i2i\n- Model ID: fal-ai/lcm-sd15-i2i\n- Input Schema: { 'prompt': string, 'image_url': string, 'strength': float, 'num_inference_steps': integer, 'sync_mode': boolean }\n- JavaScript Usage:\n  import { fal } from '@fal-ai/client';\n  const result = await fal.subscribe('fal-ai/lcm-sd15-i2i', {\n    input: {\n      prompt: 'masterpiece, colorful, photo of a beach in hawaii, sun',\n      image_url: '...',\n      sync_mode: true,\n      strength: 0.8\n    }\n  });\n---",
+        "description": "Dökümantasyon bazlı Fal.ai SDK entegrasyonu."
       },
       {
         "id": "4",
-        "title": "Prompt ve Otomatik Tetikleme",
-        "text": "Sayfanın üst kısmına bir metin girişi (input) ekle. Kullanıcı buraya bir prompt (örneğin: 'a magical forest, hyperrealistic') yazabilsin. Kullanıcı hem yazı yazdığında hem de canvas'ta çizim yapmayı bitirdiğinde Fal.ai fonksiyonu otomatik olarak tetiklensin.",
-        "description": "Metin girişi ekler ve çizimle metni birleştirerek üretimi başlatır."
-      },
-      {
-        "id": "5",
-        "title": "Proxy API Route (Güvenlik)",
-        "text": "Fal.ai API anahtarını korumak için bir Next.js API Route (Route Handler) oluştur. Frontend doğrudan Fal.ai'a gitmek yerine bu route'a istek atsın. Route Handler içinde @fal-ai/client kullanarak isteği Fal.ai'a iletsin ve sonucu döndürsün. .env.local dosyasından FAL_KEY değişkenini okusun.",
-        "description": "API anahtarlarını backend'de güvenli şekilde saklamak için proxy oluşturur."
-      },
-      {
-        "id": "6",
-        "title": "Auto-Update ve Yükleme Durumu",
-        "text": "Uygulamaya 'Auto-Update' modu ekle. Eğer aktifse, kullanıcı fırçayı hareket ettirirken (mousemove) her 500ms'de bir otomatik olarak AI görselini güncellesin. Ayrıca sağdaki AI görseli yüklenirken soluk görünmesi için bir loading animasyonu veya opacity efekti ekle.",
-        "description": "Gerçek zamanlı güncelleme modu ve yükleme animasyonları ekler."
+        "title": "Adım 4: Next.js API Proxy (Güvenlik)",
+        "text": "Fal.ai API anahtarını güvenli tutmak için bir Route Handler (app/api/generate/route.ts) oluştur. Frontend bu route'a base64 verisini göndersin, backend ise dökümandaki gibi 'fal-ai/lcm-sd15-i2i' modeline isteği iletip sonucu dönsün. API key'i 'process.env.FAL_KEY' üzerinden oku.",
+        "description": "Backend API Route ile güvenli anahtar yönetimi."
       }
     ]
   },
