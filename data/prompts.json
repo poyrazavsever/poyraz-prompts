@@ -58,5 +58,38 @@
         "description": "Hızlıca video içerik senaryoları üretmek için."
       }
     ]
+  },
+  {
+    "slug": "real-time-ai-drawing-v2",
+    "title": "Real-time AI Drawing v2",
+    "description": "Daha gelişmiş, performans odaklı ve klavye kısayolları içeren gerçek zamanlı AI çizim uygulaması.",
+    "tags": ["Next.js", "AI", "Fal.ai", "Canvas", "Performance"],
+    "date": "2026-04-10",
+    "prompts": [
+      {
+        "id": "1",
+        "title": "Minimal Arayüz Kurulumu",
+        "text": "Next.js (App Router) kullanarak boş bir sayfa oluştur. Ekranı dikey olarak tam ortadan ikiye böl. Sol tarafta 512x512 boyutunda bir HTML5 Canvas olsun (arka planı siyah, kalem rengi beyaz). Sağ tarafta ise 512x512 boyutunda bir <img> etiketi olsun. Sayfada buton, input veya başlık olmasın; sadece bu iki görsel alan yan yana dursun.",
+        "description": "Sadece görsel alanlardan oluşan minimalist bir bölünmüş ekran arayüzü kurar."
+      },
+      {
+        "id": "2",
+        "title": "Çizim Mantığı ve Klavye Kısayolu",
+        "text": "Canvas için çizim fonksiyonlarını yaz. Kullanıcı mouse ile siyah zemin üzerine beyaz çizgiler çizebilsin. Kullanıcı her 'mouseup' (çizimi bırakma) yaptığında, canvas'ın içeriğini otomatik olarak bir base64 data URL string'ine çeviren bir fonksiyon yaz. Ayrıca klavyeden 'C' tuşuna basıldığında canvas'ı temizleyen bir 'event listener' ekle.",
+        "description": "Temel çizim fonksiyonlarını, otomatik veri dönüşümünü ve 'C' tuşu ile temizleme özelliğini ekler."
+      },
+      {
+        "id": "3",
+        "title": "Fal.ai LCM Entegrasyonu",
+        "text": "Kodun içine const FIXED_PROMPT = 'masterpiece, highly detailed digital art, cinematic lighting, professional composition, hyperrealistic'; değişkenini ekle. @fal-ai/client kütüphanesini kullanarak fal-ai/lcm-sd15-i2i modeline istek atan bir yapı kur. İstek şu şekilde çalışmalı:\n\n    prompt: FIXED_PROMPT kullanılsın.\n\n    image_url: Canvas'tan gelen base64 string kullanılsın.\n\n    sync_mode: true olsun.\n\n    strength: 0.7 olarak ayarlansın.\n    Sonuç geldiğinde sağdaki <img> alanını güncelle.",
+        "description": "Sabit prompt ve canvas verisi ile Fal.ai LCM modeline entegrasyon kurar."
+      },
+      {
+        "id": "4",
+        "title": "Debounce ve Görsel Geri Bildirim",
+        "text": "Fal.ai'a giden istekleri 300ms'lik bir 'debounce' mekanizmasıyla çalıştır. Kullanıcı her çizgi çektiğinde değil, elini fırçadan çektikten 300ms sonra istek gitsin. Yeni görsel yüklenirken sağdaki eski görselin opacity değerini geçici olarak 0.5 yap ki güncellendiği belli olsun.",
+        "description": "Debounce ile API isteklerini optimize eder ve görsel yükleme geri bildirimi ekler."
+      }
+    ]
   }
 ]
