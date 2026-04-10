@@ -8,27 +8,27 @@
     "prompts": [
       {
         "id": "1",
-        "title": "Adım 1: Gelişmiş Çizim Arayüzü ve Toolbar Kurulumu",
-        "text": "Next.js (App Router) ve Tailwind CSS kullanarak bir sayfa oluştur. Sayfanın üstünde sabit bir araç çubuğu (Toolbar) olsun. Toolbar içerisinde:\n1. Renk seçici (HTML5 color input).\n2. Fırça kalınlığı ayarı (Range input, 1-50 arası).\n3. 'Tümünü Boya' butonu (Canvas'ın tamamını seçili renkle doldurur).\n4. 'Temizle' butonu (Canvas'ı sıfırlar).\nbulunsun. \nAlt kısımda ise iki ana bölme olsun: Sol tarafta 512x512 boyutunda bir çizim canvas'ı, sağ tarafta 512x512 boyutunda sonuçları gösterecek bir img placeholder. Canvas üzerinde seçilen renk ve kalınlıkla akıcı çizim yapılabilsin. State yönetimini React ile yap.",
-        "description": "Gelişmiş Toolbar ve çift bölmeli çizim arayüzü kurulumu."
+        "title": "Adım 1: Proje Temeli ve UI Kurulumu",
+        "text": "Next.js (App Router) ve Tailwind CSS kullanarak modern, dark mode temalı bir fotoğraf düzenleme sayfası oluştur. Sayfa dikey olarak ikiye bölünmeli:\n- Sol Taraf: Bir fotoğraf yükleme alanı (Input type='file'). Seçilen fotoğrafın 512x512 veya 1024x1024 boyutunda bir önizlemesi (preview) burada görünmeli. Ayrıca bir 'Temizle' butonu olmalı.\n- Sağ Taraf: 'Sonuç' alanı. Başlangıçta boş bir kare (placeholder), görsel oluştuktan sonra ise fal.ai'dan gelen görselin görüneceği alan.\nSayfanın ortasına büyük, şık bir 'Dönüştür' (Transform) butonu ekle. Bu buton sadece fotoğraf yüklendiğinde aktif olmalı.",
+        "description": "Modern dark mode UI ve fotoğraf yükleme alanı kurulumu."
       },
       {
         "id": "2",
-        "title": "Adım 2: 'Generate' Butonu ve Tetikleme Mantığı",
-        "text": "Toolbar'ın en sağına veya görselin altına belirgin bir 'Görseli Oluştur' butonu ekle. Bu buton tıklanmadığı sürece fal.ai'a hiçbir istek gönderilmesin (auto-update kapalı olsun). Butona tıklandığında:\n1. Canvas içeriğini dataURL (base64) formatına çevir.\n2. Bu veriyi bir state'e (drawingData) aktar.\n3. API isteği süresince butonu 'Processing...' durumuna getir ve sağdaki görsel alanına bir loading efekti ekle.",
-        "description": "Manuel tetikleme mekanizması ve yükleme animasyonları."
+        "title": "Adım 2: API Route ve Güvenlik Katmanı (Server-side)",
+        "text": "API anahtarını (FAL_KEY) gizli tutmak için '/app/api/transform/route.ts' dosyasını oluştur. Bu dosya:\n1. POST isteklerini kabul etmeli.\n2. `@fal-ai/client` kütüphanesini kullanarak sunucu tarafında çalışmalı.\n3. 'process.env.FAL_KEY' değişkenini kullanmalı (NEXT_PUBLIC kullanma).\n4. Frontend'den gelen base64 fotoğraf verisini ve sabit promptu 'fal-ai/nano-banana-pro/edit' modeline iletip sonucu geri döndürmeli.",
+        "description": "Server-side API Route ve güvenlik katmanı yapılandırması."
       },
       {
         "id": "3",
-        "title": "Adım 3: Fal.ai Entegrasyonu (Döküman Odaklı)",
-        "text": "Aşağıdaki model dökümanını ve JavaScript SDK kullanımını baz alarak `handleGenerate` fonksiyonunu yaz. \n- Model: 'fal-ai/lcm-sd15-i2i'\n- Prompt: Sabit olarak 'masterpiece, professional digital art, highly detailed, 8k, cinematic lighting' kullan.\n- image_url: Canvas'tan gelen base64 verisi.\n- strength: 0.65 (Çizimdeki renklerin ve formun korunması için).\n- sync_mode: true.\n- num_inference_steps: 4.\n\nDöküman Bilgisi:\n---\n# Optimized Latent Consistency (SDv1.5)\n- Endpoint: https://fal.run/fal-ai/lcm-sd15-i2i\n- Model ID: fal-ai/lcm-sd15-i2i\n- Input Schema: { 'prompt': string, 'image_url': string, 'strength': float, 'num_inference_steps': integer, 'sync_mode': boolean }\n- JavaScript Usage:\n  import { fal } from '@fal-ai/client';\n  const result = await fal.subscribe('fal-ai/lcm-sd15-i2i', {\n    input: {\n      prompt: 'masterpiece, colorful, photo of a beach in hawaii, sun',\n      image_url: '...',\n      sync_mode: true,\n      strength: 0.8\n    }\n  });\n---",
-        "description": "Dökümantasyon bazlı Fal.ai SDK entegrasyonu."
+        "title": "Adım 3: Fal.ai Entegrasyonu (Döküman Bazlı)",
+        "text": "Aşağıdaki teknik dökümanı baz alarak 'Transform' butonunun fonksiyonunu yaz. Kullanıcı butona bastığında yüklediği fotoğraf base64 formatında '/api/transform' endpoint'ine gönderilmeli. \n\nModel Parametreleri:\n- Model ID: 'fal-ai/nano-banana-pro/edit'\n- Prompt: Sabit olarak 'transform this into a high-quality, professional digital art masterpiece, cinematic lighting, vibrant colors' kullan.\n- image_urls: Frontend'den gelen base64 verisi (Döküman gereği dizi içerisinde gönderilmeli).\n- resolution: '1K'\n- sync_mode: true\n\nDÖKÜMAN BİLGİSİ:\n---\n# Nano Banana Pro Edit\n- Endpoint: https://fal.run/fal-ai/nano-banana-pro/edit\n- Input Schema: { 'prompt': string, 'image_urls': list<string>, 'resolution': string, 'sync_mode': boolean }\n- JavaScript Usage:\n  import { fal } from \"@fal-ai/client\";\n  const result = await fal.subscribe(\"fal-ai/nano-banana-pro/edit\", {\n    input: {\n      prompt: \"make a photo of the man driving the car down the california coastline\",\n      image_urls: [\"https://storage.googleapis.com/falserverless/example_inputs/nano-banana-edit-input.png\"]\n    }\n  });\n---",
+        "description": "Dökümantasyon bazlı Nano Banana Pro Edit entegrasyonu."
       },
       {
         "id": "4",
-        "title": "Adım 4: Next.js API Proxy (Güvenlik)",
-        "text": "Fal.ai API anahtarını güvenli tutmak için bir Route Handler (app/api/generate/route.ts) oluştur. Frontend bu route'a base64 verisini göndersin, backend ise dökümandaki gibi 'fal-ai/lcm-sd15-i2i' modeline isteği iletip sonucu dönsün. API key'i 'process.env.FAL_KEY' üzerinden oku.",
-        "description": "Backend API Route ile güvenli anahtar yönetimi."
+        "title": "Adım 4: Kullanıcı Deneyimi ve Hata Yönetimi",
+        "text": "Görsel oluşturma işlemi başladığında 'Transform' butonu 'AI İşliyor...' (Processing...) durumuna geçsin ve sağdaki görsel alanında şık bir loading skeleton veya spinner gösterilsin. İşlem bittiğinde gelen görsel (images[0].url) sağ tarafta belirsin. Eğer bir hata oluşursa (örn: API anahtarı hatası veya model limitleri), kullanıcıya kibar bir uyarı mesajı göster.",
+        "description": "Yükleme durumları, hata yönetimi ve UX iyileştirmeleri."
       }
     ]
   },
