@@ -8,15 +8,39 @@
     "prompts": [
       {
         "id": "1",
-        "title": "MVP Idea Refiner",
-        "text": "Sen deneyimli bir startup danışmanısın. Aşağıdaki fikir için en kritik 3 MVP özelliğini listele, hedef kitleyi tanımlayıp bir yol haritası çıkar.\n\nFikir: [Fikrinizi buraya yazın]",
-        "description": "Fikrinizi netleştirmek ve önceliklendirmek için kullanın."
+        "title": "Temel Arayüz Kurulumu",
+        "text": "Next.js (App Router) kullanarak bir sayfa oluştur. Ekran iki ana bölmeye ayrılsın. Sol tarafta 512x512 boyutunda çizim yapılabilen bir HTML5 Canvas olsun. Sağ tarafta ise üretilen AI görselinin görüneceği bir <img> alanı olsun. Canvas için temel çizim fonksiyonlarını (mousedown, mousemove, mouseup) ekle. Çizim siyah kalemle yapılsın ve bir 'Temizle' butonu olsun.",
+        "description": "Next.js ve Canvas ile temel çizim arayüzünü kurar."
       },
       {
         "id": "2",
-        "title": "Technical Architect",
-        "text": "Bir Next.js projesi için en iyi dosya yapısını ve kullanılacak kütüphaneleri (State management, Styling, Auth) öner. Ölçeklenebilirliği ve performansı ön planda tut.",
-        "description": "Yeni projenize başlarken teknik yapıyı kurmak için idealdir."
+        "title": "Canvas Veri Senkronizasyonu",
+        "text": "Canvas üzerindeki çizim her değiştiğinde (mouseup veya mousemove sırasında) canvas içeriğini base64 (data URL) formatına çeviren ve bir React state'ine (drawingData) kaydeden bir fonksiyon ekle. Bu işlem çok sık tetikleneceği için 'debounce' mekanizması ekleyerek performans optimizasyonu sağla.",
+        "description": "Çizimi base64 formatına çevirir ve performans için optimize eder."
+      },
+      {
+        "id": "3",
+        "title": "Fal.ai Entegrasyonu (lcm-sd15-i2i)",
+        "text": "Fal.ai JavaScript client (@fal-ai/client) kullanarak fal-ai/lcm-sd15-i2i modeline istek atan bir fonksiyon yaz. Fonksiyon parametre olarak prompt ve image_url (canvas'tan gelen base64) alsın. Gelen cevaptaki images[0].url değerini sağ taraftaki <img> alanında gösterilmek üzere state'e kaydetsin. sync_mode: true kullanarak hızlı yanıt almayı hedefle. strength: 0.6 ve num_inference_steps: 4 değerlerini varsayılan olarak ayarla.",
+        "description": "Görselden görsele üretim için Fal.ai entegrasyonu sağlar."
+      },
+      {
+        "id": "4",
+        "title": "Prompt ve Otomatik Tetikleme",
+        "text": "Sayfanın üst kısmına bir metin girişi (input) ekle. Kullanıcı buraya bir prompt (örneğin: 'a magical forest, hyperrealistic') yazabilsin. Kullanıcı hem yazı yazdığında hem de canvas'ta çizim yapmayı bitirdiğinde Fal.ai fonksiyonu otomatik olarak tetiklensin.",
+        "description": "Metin girişi ekler ve çizimle metni birleştirerek üretimi başlatır."
+      },
+      {
+        "id": "5",
+        "title": "Proxy API Route (Güvenlik)",
+        "text": "Fal.ai API anahtarını korumak için bir Next.js API Route (Route Handler) oluştur. Frontend doğrudan Fal.ai'a gitmek yerine bu route'a istek atsın. Route Handler içinde @fal-ai/client kullanarak isteği Fal.ai'a iletsin ve sonucu döndürsün. .env.local dosyasından FAL_KEY değişkenini okusun.",
+        "description": "API anahtarlarını backend'de güvenli şekilde saklamak için proxy oluşturur."
+      },
+      {
+        "id": "6",
+        "title": "Auto-Update ve Yükleme Durumu",
+        "text": "Uygulamaya 'Auto-Update' modu ekle. Eğer aktifse, kullanıcı fırçayı hareket ettirirken (mousemove) her 500ms'de bir otomatik olarak AI görselini güncellesin. Ayrıca sağdaki AI görseli yüklenirken soluk görünmesi için bir loading animasyonu veya opacity efekti ekle.",
+        "description": "Gerçek zamanlı güncelleme modu ve yükleme animasyonları ekler."
       }
     ]
   },
