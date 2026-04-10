@@ -62,16 +62,35 @@ export const metadata: Metadata = {
   },
 };
 
+import { Suspense } from "react";
+import { Toaster } from "poyraz-ui/molecules";
+import { Footer, FooterBottom, FooterDescription } from "poyraz-ui/organisms";
+import { NavbarWrapper } from "@/components/navbar-wrapper";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
-      <body className="min-h-full flex flex-col">
-        {children}
-        </body>
+    <html lang="tr" className="dark">
+      <body className="min-h-screen flex flex-col bg-background text-foreground antialiased antialiased">
+        <Suspense fallback={<div className="h-16 border-b bg-background" />}>
+          <NavbarWrapper />
+        </Suspense>
+        
+        <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
+          {children}
+        </main>
+        
+        <Footer variant="minimal">
+          <FooterBottom>
+            <FooterDescription>© {new Date().getFullYear()} Poyraz Avsever</FooterDescription>
+          </FooterBottom>
+        </Footer>
+        
+        <Toaster position="top-right" />
+      </body>
     </html>
   );
 }

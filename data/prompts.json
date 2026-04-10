@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "ankara-build-club-sprint-2",
+    "title": "Ankara Build Club Sprint #2",
+    "description": "Sprint sırasında kullanılan ve geliştirilen özel prompt arşivi.",
+    "tags": ["Sprint", "AI", "Startup", "Build"],
+    "date": "2026-04-10",
+    "prompts": [
+      {
+        "id": "1",
+        "title": "MVP Idea Refiner",
+        "text": "Sen deneyimli bir startup danışmanısın. Aşağıdaki fikir için en kritik 3 MVP özelliğini listele, hedef kitleyi tanımlayıp bir yol haritası çıkar.\n\nFikir: [Fikrinizi buraya yazın]",
+        "description": "Fikrinizi netleştirmek ve önceliklendirmek için kullanın."
+      },
+      {
+        "id": "2",
+        "title": "Technical Architect",
+        "text": "Bir Next.js projesi için en iyi dosya yapısını ve kullanılacak kütüphaneleri (State management, Styling, Auth) öner. Ölçeklenebilirliği ve performansı ön planda tut.",
+        "description": "Yeni projenize başlarken teknik yapıyı kurmak için idealdir."
+      }
+    ]
+  },
+  {
+    "slug": "generative-media-hackathon",
+    "title": "Generative Media Hackathon",
+    "description": "Yapay zeka ile medya üretimi üzerine odaklanan maraton promptları.",
+    "tags": ["Media", "Hackathon", "Creative"],
+    "date": "2026-03-15",
+    "prompts": [
+      {
+        "id": "3",
+        "title": "Script Generator",
+        "text": "30 saniyelik bir kısa film için dramatik bir senaryo yaz. Karakterler: [Karakter 1], [Karakter 2]. Ortam: [Ortam açıklaması].",
+        "description": "Hızlıca video içerik senaryoları üretmek için."
+      }
+    ]
+  }
+]
